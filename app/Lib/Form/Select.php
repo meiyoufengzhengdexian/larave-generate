@@ -6,7 +6,7 @@
  * Time: 15:33
  */
 
-namespace App\Lib;
+namespace App\Lib\Form;
 
 
 class Select extends FormInput

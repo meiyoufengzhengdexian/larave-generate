@@ -6,7 +6,7 @@
  * Time: 14:41
  */
 
-namespace App\Lib;
+namespace App\Lib\Form;
 
 
 abstract class FormInput

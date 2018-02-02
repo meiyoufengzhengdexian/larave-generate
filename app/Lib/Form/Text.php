@@ -3,13 +3,13 @@
  * Created by PhpStorm.
  * User: Administrator
  * Date: 2018/2/1
- * Time: 15:32
+ * Time: 14:42
  */
 
-namespace App\Lib;
+namespace App\Lib\Form;
 
 
-class Number extends FormInput
+class Text extends FormInput
 {
     public function view()
     {
@@ -17,7 +17,7 @@ class Number extends FormInput
         <div class="form-group">
           <label for="{$this->name}" class="col-sm-2 control-label">{$this->showName}</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" id="{$this->name}" name="{$this->name}" placeholder="{$this->showName}">
+            <input type="text" class="form-control" id="{$this->name}" name="{$this->name}" placeholder="{$this->showName}">
           </div>
         </div>
 HTML;

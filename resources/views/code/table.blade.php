@@ -9,11 +9,31 @@
                 </div>
                 <div class="box-body">
                     <table class="table table-bordered">
+                        <input type="hidden" name="table" value="{{ $request->table }}">
+                        <tbody>
+                        <tr>
+                            <td style="width:8em;">模型名</td>
+                            <td><input type="text" class="form-control" name="model_name" value="{{ camel_case($request->table) }}"></td>
+                        </tr>
+                        <tr>
+                            <td>控制器名</td>
+                            <td><input type="text" class="form-control" name="controller_name" value="{{ camel_case($request->table).'Ctrl' }}"></td>
+                        </tr>
+                        <tr>
+                            <td>View名</td>
+                            <td><input type="text" class="form-control" name="view_name" value="{{camel_case($request->table)}}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered">
                         <tbody>
                         <tr>
                             <th>字段</th>
                             <th>类型</th>
+                            <th>别名</th>
                             <th>输入</th>
+                            <th>搜索</th>
+                            <th>排序</th>
                             <th>列表</th>
                             <th>创建</th>
                             <th>编辑</th>
@@ -22,43 +42,66 @@
                             <th>关联字段</th>
                         </tr>
                         @foreach($data as $item)
-                            <tr>
+                            <tr class="item">
+                                <input type="hidden" class="name" value="{{ $item['name'] }}">
                                 <td>{{ $item['name'] }}</td>
                                 <td>{{ $item['type'] }}</td>
                                 <td>
-                                    <select name="" id="" class="form-control table-select">
-                                        <option value="">
-                                            单行文本
-                                        </option>
+                                    <input type="text" class="form-control table-input as" value="{{ $item['name'] }}">
+                                </td>
+                                <td>
+                                    <select name="" id="" class="form-control table-select input">
+                                        @foreach($className as $class)
+                                            <option value="{{ $class }}" @if($class == 'Text') selected @endif>
+                                                {{ $class }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </td>
                                 <td>
                                     <label><input type="checkbox"
-                                                  class="minimal"
-                                                  @if($item['name'] != 'id' && $item['name']!='created_at' && $item['name']!='updated_at' && $item['name']!='deleted_at')
+                                                  class="minimal search"
                                                   checked
-                                                @endif
+                                                  value="1"
                                         ></label>
                                 </td>
                                 <td>
                                     <label><input type="checkbox"
-                                                  class="minimal"
-                                                  @if($item['name'] != 'id' && $item['name']!='created_at' && $item['name']!='updated_at' && $item['name']!='deleted_at')
+                                                  class="minimal order"
                                                   checked
-                                                @endif
+                                                  value="1"
                                         ></label>
                                 </td>
                                 <td>
                                     <label><input type="checkbox"
-                                                  class="minimal"
+                                                  class="minimal index"
                                                   @if($item['name'] != 'id' && $item['name']!='created_at' && $item['name']!='updated_at' && $item['name']!='deleted_at')
                                                   checked
-                                                @endif
+                                                  @endif
+                                                  value="1"
                                         ></label>
                                 </td>
-                                <td><input type="text" class="form-control table-input"></td>
-                                <td><input type="text" class="form-control table-input" value="name"></td>
-                                <td><input type="text" class="form-control table-input" value="id"></td>
+                                <td>
+                                    <label><input type="checkbox"
+                                                  class="minimal create"
+                                                  @if($item['name'] != 'id' && $item['name']!='created_at' && $item['name']!='updated_at' && $item['name']!='deleted_at')
+                                                  checked
+                                                  @endif
+                                                  value="1"
+                                        ></label>
+                                </td>
+                                <td>
+                                    <label><input type="checkbox"
+                                                  class="minimal edit"
+                                                  @if($item['name'] != 'id' && $item['name']!='created_at' && $item['name']!='updated_at' && $item['name']!='deleted_at')
+                                                  checked
+                                                  @endif
+                                                  value="1"
+                                        ></label>
+                                </td>
+                                <td><input type="text" class="form-control table-input ref-class"></td>
+                                <td><input type="text" class="form-control table-input ref-name" value="name"></td>
+                                <td><input type="text" class="form-control table-input ref-id" value="id"></td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -66,13 +109,7 @@
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer clearfix">
-                    <ul class="pagination pagination-sm no-margin pull-right">
-                        <li><a href="#">«</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">»</a></li>
-                    </ul>
+                    <button class="btn btn-danger pull-right" id="generate">Generate</button>
                 </div>
             </div>
         </div>
@@ -82,7 +119,7 @@
 @push('addcss')
 <link rel="stylesheet" href="{{ asset('/plugins/iCheck/all.css') }}">
 <style>
-    .table-select,.table-input[type=text]{
+    .table-select, .table-input[type=text] {
         /*width:150px;*/
     }
 </style>
@@ -90,10 +127,67 @@
 @push('addjs')
 <script src="{{ asset('plugins/iCheck/icheck.min.js') }}"></script>
 <script>
-
     $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
         checkboxClass: 'icheckbox_minimal-blue',
         radioClass: 'iradio_minimal-blue'
     })
+</script>
+<script>
+    $(function () {
+        $('#generate').on('click', function () {
+            var fieldlist = [];
+            $('.item').each(function (k, v) {
+                var $v = $(v);
+                var field = {};
+                field.name = $v.find('.name').val();
+                field.as = $v.find('.as').val();
+                //select
+                field.input = $v.find('.input option:selected').val();
+
+                //checkbox
+                field.search = !!$v.find('.search:checked').val();
+                field.order = !!$v.find('.order:checked').val();
+                field.index = !!$v.find('.index:checked').val();
+                field.create = !!$v.find('.create:checked').val();
+                field.edit = !!$v.find('.edit:checked').val();
+
+                field.ref_class = $v.find('.ref-class').val();
+                field.ref_id = $v.find('.ref-id').val();
+                field.ref_name = $v.find('.ref-name').val();
+
+                fieldlist.push(field);
+            });
+
+            var data = {
+                fields: fieldlist,
+                table: $('[name=table]').val(),
+                model_name: $('[name=model_name]').val(),
+                controller_name:$('[name=controller_name]').val(),
+                view_name:$('[name=view_name]').val()
+            };
+
+            $.postData('/code/table', data, function (res) {
+                switch (res.result.code) {
+                    case 1 :
+                        $.alert('生成成功');
+                        break;
+                    case 2:
+                        $.confirm('已经生成过！是否覆盖？', function () {
+                            data.overwrite = true;
+                            $.postData('/code/table', data, function (res) {
+                                if (res.result.code == 1) {
+                                    $.alert('生成成功');
+                                } else {
+                                    $.alert(res.result.message || '生成失败');
+                                }
+                            });
+                        });
+                        break;
+                    case -1:
+                        $.alert(res.result.message || '生成失败');
+                }
+            });
+        });
+    });
 </script>
 @endpush

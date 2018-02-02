@@ -16,7 +16,14 @@ Route::get('/', function () {
 });
 Route::get('/code', "Code@index");
 Route::post('/code/database', 'Code@database');
+Route::post('/code/table', 'Code@gen');
 
-Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::group([
+    'prefix'=>'admin',
+    'namespace'=>'Admin'
+], function (){
+    Route::resource('/test', 'TestCtrl');
+});
