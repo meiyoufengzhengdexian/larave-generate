@@ -13,15 +13,18 @@
                         <tbody>
                         <tr>
                             <td style="width:8em;">模型名</td>
-                            <td><input type="text" class="form-control" name="model_name" value="{{ camel_case($request->table) }}"></td>
+                            <td><input type="text" class="form-control" name="model_name"
+                                       value="{{ camel_case($request->table) }}"></td>
                         </tr>
                         <tr>
                             <td>控制器名</td>
-                            <td><input type="text" class="form-control" name="controller_name" value="{{ camel_case($request->table).'Ctrl' }}"></td>
+                            <td><input type="text" class="form-control" name="controller_name"
+                                       value="{{ camel_case($request->table).'Ctrl' }}"></td>
                         </tr>
                         <tr>
                             <td>View名</td>
-                            <td><input type="text" class="form-control" name="view_name" value="{{camel_case($request->table)}}"></td>
+                            <td><input type="text" class="form-control" name="view_name"
+                                       value="{{camel_case($request->table)}}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -37,6 +40,8 @@
                             <th>列表</th>
                             <th>创建</th>
                             <th>编辑</th>
+                            <th>关联关系</th>
+                            <th>关联方法名</th>
                             <th>关联模型</th>
                             <th>关联显示名</th>
                             <th>关联字段</th>
@@ -90,6 +95,7 @@
                                                   value="1"
                                         ></label>
                                 </td>
+
                                 <td>
                                     <label><input type="checkbox"
                                                   class="minimal edit"
@@ -99,6 +105,15 @@
                                                   value="1"
                                         ></label>
                                 </td>
+                                <td>
+                                    <select name="" id="" class="form-control table-select ref">
+                                        <option value="">no</option>
+                                        <option value="belongsTo">belongsTo</option>
+                                        <option value="hasMany">hasMany</option>
+                                        <option value="belongsToMany">belongsToMany</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" class="form-control table-input ref-function" placeholder="默认为get+模型名"></td>
                                 <td><input type="text" class="form-control table-input ref-class"></td>
                                 <td><input type="text" class="form-control table-input ref-name" value="name"></td>
                                 <td><input type="text" class="form-control table-input ref-id" value="id"></td>
@@ -154,7 +169,8 @@
                 field.ref_class = $v.find('.ref-class').val();
                 field.ref_id = $v.find('.ref-id').val();
                 field.ref_name = $v.find('.ref-name').val();
-
+                field.ref = $v.find('.ref option:selected').val();
+                field.ref_function = $v.find('.ref-function').val();
                 fieldlist.push(field);
             });
 
@@ -162,8 +178,8 @@
                 fields: fieldlist,
                 table: $('[name=table]').val(),
                 model_name: $('[name=model_name]').val(),
-                controller_name:$('[name=controller_name]').val(),
-                view_name:$('[name=view_name]').val()
+                controller_name: $('[name=controller_name]').val(),
+                view_name: $('[name=view_name]').val()
             };
 
             $.postData('/code/table', data, function (res) {

@@ -74,7 +74,10 @@ class Code extends Controller
 
         $v = Validator::make($request->all(), $r, $m);
         $v->validate();
+
+
         $modelStr = view('code.template.modal', compact('request'))->__toString();
+        $controlerStr = view('code.template.controller', compact('request'))->__toString();
 
         if(!is_dir('../app/Modal')){
             mkdir('../app/Modal');
@@ -87,6 +90,7 @@ class Code extends Controller
         }else {
             //复写
             file_put_contents('../app/Modal/'.$request->model_name.'.php', $modelStr);
+            file_put_contents('../app/Http/Controllers/Admin/'.$request->controller_name.'.php', $controlerStr);
         }
 
         return [

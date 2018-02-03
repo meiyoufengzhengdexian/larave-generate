@@ -7,7 +7,7 @@ use Overtrue\Pinyin\Pinyin;
 
 class Test extends Model
 {
-    protected $table = 'Test';
+    protected $table = 'test';
     protected $guarded  = [];
     protected $dates = ['deleted_at'];
     use SoftDeletes;
@@ -19,10 +19,7 @@ class Test extends Model
         $key = implode('', $data);
         $key .= implode('', $p->convert($key));
         return $key;
-    }
-
-    public function getTestRef()
-    {
-        return $this->belongsTo(TestRef::class, 'ref_one_of_many', 'id');
-    }
 }
+                                        
+                                        
+                                        }
