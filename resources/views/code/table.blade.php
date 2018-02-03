@@ -160,11 +160,11 @@
                 field.input = $v.find('.input option:selected').val();
 
                 //checkbox
-                field.search = !!$v.find('.search:checked').val();
-                field.order = !!$v.find('.order:checked').val();
-                field.index = !!$v.find('.index:checked').val();
-                field.create = !!$v.find('.create:checked').val();
-                field.edit = !!$v.find('.edit:checked').val();
+                field.search = !!$v.find('.search:checked').val()?1:0;
+                field.order = !!$v.find('.order:checked').val()?1:0;
+                field.index = !!$v.find('.index:checked').val()?1:0;
+                field.create = !!$v.find('.create:checked').val()?1:0;
+                field.edit = !!$v.find('.edit:checked').val()?1:0;
 
                 field.ref_class = $v.find('.ref-class').val();
                 field.ref_id = $v.find('.ref-id').val();
