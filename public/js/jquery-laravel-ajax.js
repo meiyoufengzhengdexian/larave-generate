@@ -10,6 +10,7 @@ $.extend({
             url: url,
             data: data,
             type: 'post',
+            cache:false,
             success: success,
             error: function (res) {
                 if (err) {
@@ -52,6 +53,7 @@ $.extend({
             url: url,
             data: data,
             type: 'get',
+            cache:false,
             success: success,
 
             error: function (res) {

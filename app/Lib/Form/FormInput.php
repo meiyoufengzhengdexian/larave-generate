@@ -15,10 +15,13 @@ abstract class FormInput
     public $showName;
     public $css = [];
     public $js = [];
-    public function __construct($name, $showName)
+    public $type;
+    public function __construct($name, $showName, $ext, $type=1)
     {
         $this->name = $name;
         $this->showName = $showName;
+        $this->ext = $ext;
+        $this->type = $type;
     }
     abstract public function view();
 }

@@ -9,7 +9,7 @@ class <?= ucfirst($request->model_name)?> extends Model
 {
     protected $table = '<?= $request->model_name ?>';
     protected $guarded  = [];
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at'] ;
     use SoftDeletes;
 
     public static function createSearKey($data)

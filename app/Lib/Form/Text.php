@@ -13,7 +13,17 @@ class Text extends FormInput
 {
     public function view()
     {
-        $html = <<<HTML
+        if($this->type==1){
+            $html = <<<HTML
+        <div class="form-group">
+          <label for="{$this->name}" class="control-label">{$this->showName}</label>
+          <div>
+            <input type="text" class="form-control" id="{$this->name}" name="{$this->name}" placeholder="{$this->showName}">
+          </div>
+        </div>
+HTML;
+        }else{
+            $html = <<<HTML
         <div class="form-group">
           <label for="{$this->name}" class="col-sm-2 control-label">{$this->showName}</label>
           <div class="col-sm-10">
@@ -21,6 +31,8 @@ class Text extends FormInput
           </div>
         </div>
 HTML;
+        }
+
         return $html;
     }
 }

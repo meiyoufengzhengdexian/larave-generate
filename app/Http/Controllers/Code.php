@@ -78,9 +78,14 @@ class Code extends Controller
 
         $modelStr = view('code.template.modal', compact('request'))->__toString();
         $controlerStr = view('code.template.controller', compact('request'))->__toString();
+        $indexStr = view('code.template.index', compact('request'))->__toString();
+        $createStr = view('code.template.create', compact('request'))->__toString();
 
         if(!is_dir('../app/Modal')){
             mkdir('../app/Modal');
+        }
+        if(!is_dir('../resources/views/admin/'.$request->view_name)){
+            mkdir('../resources/views/admin/'.$request->view_name);
         }
 
         if(is_file('../app/Modal/'.$request->model_name.'.php') && !$request->input('overwrite', false)){
@@ -91,12 +96,20 @@ class Code extends Controller
             //复写
             file_put_contents('../app/Modal/'.$request->model_name.'.php', $modelStr);
             file_put_contents('../app/Http/Controllers/Admin/'.$request->controller_name.'.php', $controlerStr);
+
+            file_put_contents('../resources/views/admin/'.$request->view_name.'/index.blade.php', $indexStr);
+            file_put_contents('../resources/views/admin/'.$request->view_name.'/create.blade.php', $createStr);
         }
 
+        $str = file_get_contents('../routes/web.php');
+
+        if(strpos($str,"Route::resource('{$request->view_name}', '{$request->controller_name}');") === false){
+            $str = str_replace('//auto_code_gen_flag', "Route::resource('{$request->view_name}', '{$request->controller_name}');\r\n    //auto_code_gen_flag", $str);
+            file_put_contents('../routes/web.php', $str);
+        }
         return [
             'result' => new Result(1),
             'data' => $request->all(),
-            'modelStr'=>$modelStr
         ];
     }
 

@@ -25,5 +25,10 @@ Route::group([
     'prefix'=>'admin',
     'namespace'=>'Admin'
 ], function (){
-    Route::resource('/test', 'TestCtrl');
+    Route::any('success',function (){
+        return view('admin/success');
+    });
+
+    Route::resource('articel', 'articelCtrl');
+    //auto_code_gen_flag
 });
